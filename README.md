@@ -6,7 +6,6 @@ sample is classified as either edible or poisonous. The goal here is to
 train decision trees to predict whether a mushroom is edible or poisonous
 based on its physical attributes.
   
-  
 Data source: http://archive.ics.uci.edu/ml/datasets/Mushroom
 
 Dataset in this repository: agaricus-lepiota.data

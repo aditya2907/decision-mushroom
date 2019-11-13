@@ -1,1 +1,0 @@
-Data source: http://archive.ics.uci.edu/ml/datasets/Mushroom

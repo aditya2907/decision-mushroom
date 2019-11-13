@@ -155,6 +155,7 @@ def build_tree(examples):
 
     # Find best question to split current bucket. Split examples
     split_question, gain = find_split_question(examples)
+
     true_ex, false_ex = split_examples(examples, split_question)
 
     # Skip if the split leads to an empty branch
@@ -219,7 +220,6 @@ def main():
 
     # Fit a tree to training data
     tree = build_tree(train_data)
-    print(tree)
     # Run a test on the tree
     run_test(tree, test_data)
 

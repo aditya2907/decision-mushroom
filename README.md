@@ -8,5 +8,7 @@ based on its physical attributes.
   
   
 Data source: http://archive.ics.uci.edu/ml/datasets/Mushroom
+
 Dataset in this repository: agaricus-lepiota.data
+
 Description of the dataset: agaricus-lepiota.names

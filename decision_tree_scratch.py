@@ -12,16 +12,25 @@ def plurality(examples):
     return counts.most_common()[0]
 
 
-class Tree_node():
+class Question:
+    def __init__(self, funct, col_index):
+        self.funct = funct
+        self.col_index = col_index
+
+    def answer(self, example):
+        return self.funct(example[self.col_index])
+
+
+class Tree_node:
     def __init__(self, true_branch, false_branch, question):
         self.true_branch = true_branch
         self.false_branch = false_branch
         self.question = question
 
-class Leaf():
-    def __init__(examples):
-        self.classification = plurality(examples)
 
+class Leaf():
+    def __init__(self, examples):
+        self.classification = plurality(examples)
 
 
 def main():

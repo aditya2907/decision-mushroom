@@ -3,7 +3,6 @@ Train a decision tree on a dataset on mushrooms using sklearn. Test the
 decision tree in predicting whether a mushroom is poisonous or edible.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
-
 import get_mushroom_data
 from sklearn.tree import DecisionTreeClassifier
 

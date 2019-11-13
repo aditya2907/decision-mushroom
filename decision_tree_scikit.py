@@ -9,7 +9,10 @@ from sklearn.tree import DecisionTreeClassifier
 
 def main():
     # Get mushroom data
-    features, labels = get_mushroom_data.get_data()
+    examples = get_mushroom_data.get_data()
+    # features, labels = get_mushroom_data.get_data()
+    features = [e[0] for e in examples]
+    labels = [e[1] for e in examples]
 
     # Split data into training and test sets
     split = int(len(features)*0.8)

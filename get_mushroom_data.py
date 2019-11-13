@@ -70,7 +70,6 @@ def get_data():
     # Convert values to integers
     convert_data(examples)
     # Separate features and labels
-    features = [e[1:] for e in examples]
-    labels = [e[0] for e in examples]
+    examples = [(e[1:], e[0]) for e in examples]
 
-    return features, labels
+    return examples

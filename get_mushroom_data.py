@@ -54,7 +54,7 @@ def convert_data(examples):
             row[col] = value_set.index(row[col])
 
 
-def get_data():
+def get_data(convert=False):
     """
     Get and process mushroom dataset, fix missing values
     :return: a list of mushroom features and a list of mushroom labels
@@ -68,7 +68,8 @@ def get_data():
     # Fill in missing values
     fix_missing_values(examples)
     # Convert values to integers
-    convert_data(examples)
+    if convert:
+        convert_data(examples)
     # Separate features and labels
     examples = [(e[1:], e[0]) for e in examples]
 

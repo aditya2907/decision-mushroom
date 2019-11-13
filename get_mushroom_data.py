@@ -74,5 +74,3 @@ def get_data():
     labels = [e[0] for e in examples]
 
     return features, labels
-
-get_data()

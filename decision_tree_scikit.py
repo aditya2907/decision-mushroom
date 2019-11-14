@@ -5,11 +5,13 @@ Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
 import get_mushroom_data
 from sklearn.tree import DecisionTreeClassifier
+import random
 
 
 def main():
     # Get mushroom data
     examples = get_mushroom_data.get_data(convert=True)
+    random.shuffle(examples)
     features = [e[0] for e in examples]
     labels = [e[1] for e in examples]
 

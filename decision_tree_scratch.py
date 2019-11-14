@@ -133,7 +133,8 @@ def find_split_question(examples):
             question = Question(lambda x: x == v, col, v)
             true_ex, false_ex = split_examples(examples, question)
 
-            if len(true_ex) == 0 or len(false_ex) == 0:
+            # Avoid features that do not split the bucket
+            if not true_ex or not true_ex:
                 continue
 
             cur_gain = info_gain(true_ex, false_ex, curr_impurity)
@@ -158,18 +159,14 @@ def build_tree(examples):
         return Leaf(examples)
 
     # Find best question to split current bucket. Split examples
-    split_question, gain, tx, fx = find_split_question(examples)
+    split_question, gain, true_ex, false_ex = find_split_question(examples)
 
     if gain == 0:
         return Leaf(examples)
 
-    true_ex, false_ex = split_examples(examples, split_question)
-
     # Recursively build the true and false branches with new buckets
-    # true_branch = build_tree(true_ex).prediction
-    # false_branch = build_tree(false_ex).prediction
-    true_branch = build_tree(tx)
-    false_branch = build_tree(fx)
+    true_branch = build_tree(true_ex)
+    false_branch = build_tree(false_ex)
     return TreeNode(split_question, true_branch, false_branch)
 
 
@@ -208,24 +205,13 @@ def run_test(tree, test_data):
     print(f'Accuracy: {num_correct}/{len(test_data)} ({accuracy}%)')
 
 
-def print_tree(tree):
-    if isinstance(tree, TreeNode):
-        print(tree)
-    elif isinstance(tree, Leaf):
-        print(tree, tree.prediction)
-
-    if isinstance(tree, TreeNode):
-        print_tree(tree.true_branch)
-        print_tree(tree.false_branch)
-
-
 def main():
     """
     Get mushroom data, split data into training and test sets, train a
     decision tree on training data, test the tree for accuracy
     """
     # Get mushroom data
-    examples = get_mushroom_data.get_data()[:4000]
+    examples = get_mushroom_data.get_data()
     random.shuffle(examples)
 
     # Split data into training and test sets
@@ -235,7 +221,6 @@ def main():
 
     # Fit a tree to training data
     tree = build_tree(train_data)
-    print_tree(tree)
     # Run a test on the tree
     run_test(tree, test_data)
 

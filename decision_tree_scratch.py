@@ -6,6 +6,7 @@ Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
 from collections import Counter
 import get_mushroom_data
+import random
 
 
 class TreeNode:
@@ -224,7 +225,8 @@ def main():
     decision tree on training data, test the tree for accuracy
     """
     # Get mushroom data
-    examples = get_mushroom_data.get_data()
+    examples = get_mushroom_data.get_data()[:4000]
+    random.shuffle(examples)
 
     # Split data into training and test sets
     split = int(len(examples)*0.8)

@@ -34,9 +34,10 @@ class Question:
     A Question consists of a boolean function that takes a feature value, and
     the column index of the relevant feature in an example.
     """
-    def __init__(self, funct, col_index):
+    def __init__(self, funct, col_index, val):
         self.funct = funct
         self.col_index = col_index
+        self.val = val
 
     def answer(self, example):
         """
@@ -105,7 +106,7 @@ def split_examples(examples, question):
     :return: (list of examples that pass the question, list of ones that don't)
     """
     true_ex = [e for e in examples if question.answer(e)]
-    false_ex = [e for e in examples if e not in true_ex]
+    false_ex = [e for e in examples if not question.answer(e)]
     return true_ex, false_ex
 
 
@@ -119,6 +120,7 @@ def find_split_question(examples):
     best_gain = 0
     best_question = None
     curr_impurity = gini_impurity(examples)
+    best_split = (None, None)
 
     # Find question feature by feature
     for col in range(len(examples[0][0])):
@@ -127,10 +129,10 @@ def find_split_question(examples):
 
         # Test a question based on each feature value
         for v in feature_vals:
-            question = Question(lambda x: x == v, col)
+            question = Question(lambda x: x == v, col, v)
             true_ex, false_ex = split_examples(examples, question)
 
-            if (not true_ex) or (not false_ex):
+            if len(true_ex) == 0 or len(false_ex) == 0:
                 continue
 
             cur_gain = info_gain(true_ex, false_ex, curr_impurity)
@@ -139,8 +141,9 @@ def find_split_question(examples):
             if cur_gain > best_gain:
                 best_gain = cur_gain
                 best_question = question
+                best_split = true_ex, false_ex
 
-    return best_question, best_gain
+    return best_question, best_gain, best_split[0], best_split[1]
 
 
 def build_tree(examples):
@@ -154,18 +157,18 @@ def build_tree(examples):
         return Leaf(examples)
 
     # Find best question to split current bucket. Split examples
-    split_question, gain = find_split_question(examples)
+    split_question, gain, tx, fx = find_split_question(examples)
+
+    if gain == 0:
+        return Leaf(examples)
 
     true_ex, false_ex = split_examples(examples, split_question)
 
-    # Skip if the split leads to an empty branch
-    if not true_ex or not false_ex:
-        return Leaf(examples)
-
     # Recursively build the true and false branches with new buckets
-    true_branch = build_tree(true_ex)
-    false_branch = build_tree(false_ex)
-
+    # true_branch = build_tree(true_ex).prediction
+    # false_branch = build_tree(false_ex).prediction
+    true_branch = build_tree(tx)
+    false_branch = build_tree(fx)
     return TreeNode(split_question, true_branch, false_branch)
 
 
@@ -179,9 +182,9 @@ def classify(tree_node, example):
         return tree_node.prediction
 
     if tree_node.question.answer(example):
-        classify(tree_node.true_branch, example)
+        return classify(tree_node.true_branch, example)
     else:
-        classify(tree_node.false_branch, example)
+        return classify(tree_node.false_branch, example)
 
 
 def run_test(tree, test_data):
@@ -194,8 +197,7 @@ def run_test(tree, test_data):
     num_correct = 0
 
     for d in test_data:
-        prediction = classify(tree, test_data[0])
-
+        prediction = classify(tree, d)
         print(f'Actual: {d[1]}    Prediction: {prediction}')
 
         if prediction == d[1]:
@@ -205,13 +207,24 @@ def run_test(tree, test_data):
     print(f'Accuracy: {num_correct}/{len(test_data)} ({accuracy}%)')
 
 
+def print_tree(tree):
+    if isinstance(tree, TreeNode):
+        print(tree)
+    elif isinstance(tree, Leaf):
+        print(tree, tree.prediction)
+
+    if isinstance(tree, TreeNode):
+        print_tree(tree.true_branch)
+        print_tree(tree.false_branch)
+
+
 def main():
     """
     Get mushroom data, split data into training and test sets, train a
     decision tree on training data, test the tree for accuracy
     """
     # Get mushroom data
-    examples = get_mushroom_data.get_data()[:1000]
+    examples = get_mushroom_data.get_data()
 
     # Split data into training and test sets
     split = int(len(examples)*0.8)
@@ -220,9 +233,11 @@ def main():
 
     # Fit a tree to training data
     tree = build_tree(train_data)
+    print_tree(tree)
     # Run a test on the tree
     run_test(tree, test_data)
 
 
 if __name__ == '__main__':
     main()
+    exit(0)

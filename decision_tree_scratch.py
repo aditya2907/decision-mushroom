@@ -47,7 +47,7 @@ class Question:
         :return: True if the example's feature value fits the question,
         else False.
         """
-        return self.funct(example[0][self.col_index])
+        return example[0][self.col_index] == self.val
 
 
 def plurality(examples):
@@ -181,7 +181,7 @@ def classify(tree_node, example):
 
     if tree_node.question.answer(example):
         return classify(tree_node.true_branch, example)
-    else:
+    elif not tree_node.question.answer(example):
         return classify(tree_node.false_branch, example)
 
 
@@ -205,6 +205,17 @@ def run_test(tree, test_data):
     print(f'Accuracy: {num_correct}/{len(test_data)} ({accuracy}%)')
 
 
+def print_tree(tree):
+    if isinstance(tree, Leaf):
+        print(tree.prediction)
+    else:
+        print(tree.question.col_index, tree.question.val)
+
+    if isinstance(tree, TreeNode):
+        print_tree(tree.true_branch)
+        print_tree(tree.false_branch)
+
+
 def main():
     """
     Get mushroom data, split data into training and test sets, train a
@@ -212,7 +223,7 @@ def main():
     """
     # Get mushroom data
     examples = get_mushroom_data.get_data()
-    random.shuffle(examples)
+    # random.shuffle(examples)
 
     # Split data into training and test sets
     split = int(len(examples)*0.8)
@@ -221,6 +232,7 @@ def main():
 
     # Fit a tree to training data
     tree = build_tree(train_data)
+
     # Run a test on the tree
     run_test(tree, test_data)
 

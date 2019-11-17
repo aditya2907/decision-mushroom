@@ -106,8 +106,15 @@ def split_examples(examples, question):
     :param question: Question to split examples on.
     :return: (list of examples that pass the question, list of ones that don't)
     """
-    true_ex = [e for e in examples if question.answer(e)]
-    false_ex = [e for e in examples if not question.answer(e)]
+    true_ex = []
+    false_ex = []
+
+    for e in examples:
+        if question.answer(e):
+            true_ex.append(e)
+        else:
+            false_ex.append(e)
+
     return true_ex, false_ex
 
 
@@ -223,7 +230,7 @@ def main():
     """
     # Get mushroom data
     examples = get_mushroom_data.get_data()
-    # random.shuffle(examples)
+    random.shuffle(examples)
 
     # Split data into training and test sets
     split = int(len(examples)*0.8)

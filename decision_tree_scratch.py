@@ -1,12 +1,13 @@
 """
 Train a decision tree on a dataset on mushrooms. Test the decision tree in
-predicting whether a mushroom is poisonous or edible. The decision tree here is
-built from scratch.
+predicting whether a mushroom is poisonous ('p') or edible ('e'). The decision
+tree here is built from scratch.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
 from collections import Counter
 import get_mushroom_data
 import random
+import queue
 
 
 class TreeNode:
@@ -20,6 +21,9 @@ class TreeNode:
         self.true_branch = true_branch
         self.false_branch = false_branch
 
+    def __str__(self):
+        return str(self.question)
+
 
 class Leaf:
     """
@@ -29,16 +33,21 @@ class Leaf:
     def __init__(self, examples):
         self.prediction = plurality(examples)
 
+    def __str__(self):
+        return self.prediction
+
 
 class Question:
     """
     A Question consists of a boolean function that takes a feature value, and
     the column index of the relevant feature in an example.
     """
-    def __init__(self, funct, col_index, val):
-        self.funct = funct
+    def __init__(self, col_index, val):
         self.col_index = col_index
         self.val = val
+
+    def __str__(self):
+        return f'feature[{self.col_index}] == {self.val}?'
 
     def answer(self, example):
         """
@@ -137,7 +146,7 @@ def find_split_question(examples):
 
         # Test a question based on each feature value
         for v in feature_vals:
-            question = Question(lambda x: x == v, col, v)
+            question = Question(col, v)
             true_ex, false_ex = split_examples(examples, question)
 
             # Avoid features that do not split the bucket
@@ -188,7 +197,7 @@ def classify(tree_node, example):
 
     if tree_node.question.answer(example):
         return classify(tree_node.true_branch, example)
-    elif not tree_node.question.answer(example):
+    else:
         return classify(tree_node.false_branch, example)
 
 
@@ -213,10 +222,11 @@ def run_test(tree, test_data):
 
 
 def print_tree(tree):
-    if isinstance(tree, Leaf):
-        print(tree.prediction)
-    else:
-        print(tree.question.col_index, tree.question.val)
+    """
+    Tree-printing function for diagnosis.
+    :param tree: a tree node (non-leaf)
+    """
+    print(tree)
 
     if isinstance(tree, TreeNode):
         print_tree(tree.true_branch)
@@ -226,7 +236,8 @@ def print_tree(tree):
 def main():
     """
     Get mushroom data, split data into training and test sets, train a
-    decision tree on training data, test the tree for accuracy
+    decision tree on training data, test the tree for accuracy.
+    Labels: 'p'-poisonous, 'e'-edible
     """
     # Get mushroom data
     examples = get_mushroom_data.get_data()

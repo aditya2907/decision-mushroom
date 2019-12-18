@@ -27,11 +27,10 @@ def main():
     decision_tree = decision_tree.fit(train_features, train_labels)
 
     # Test decision tree on test data
-    # Iterative testing
     for i in range(len(test_features)):
-        print(f'Features: {test_features[i]}    '
-              f'Actual label: {test_labels[i]}  '
-              f'Predicted label: {decision_tree.predict([test_features[i]])}')
+        print(f'Actual label: {test_labels[i]}  '
+              f'Predicted label: '
+              f'{decision_tree.predict([test_features[i]])[0]}')
 
     # Show accuracy over test set
     accuracy = decision_tree.score(test_features, test_labels)

@@ -7,7 +7,6 @@ Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 from collections import Counter
 import get_mushroom_data
 import random
-import queue
 
 
 class TreeNode:

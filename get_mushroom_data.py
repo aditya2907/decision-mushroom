@@ -65,11 +65,14 @@ def get_data(convert=False):
 
     # Remove punctuation
     examples = [l.split(',') for l in file_lines if l]
+
     # Fill in missing values
     fix_missing_values(examples)
+
     # Convert values to integers
     if convert:
         convert_data(examples)
+
     # Separate features and labels
     examples = [(e[1:], e[0]) for e in examples]
 

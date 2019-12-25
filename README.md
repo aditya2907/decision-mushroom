@@ -12,6 +12,9 @@ made from scratch. `get_mushroom_data.py` is used in both of the aforementioned
 programs to load the mushroom, including extrapolating missing feature values.
 The decision tree made from scratch achieved 100% accuracy in multiple tests.
 
+In addition to using decision trees, this project has been expanded to include
+classification using a neural network. This is implemented in `classify_nn.py`.
+
 ## Data
 Data source: http://archive.ics.uci.edu/ml/datasets/Mushroom
 
@@ -21,3 +24,5 @@ Description of the dataset: agaricus-lepiota.names
 
 ## Requirements
 - scikit-learn
+- tensorflow
+- pandas
